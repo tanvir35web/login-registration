@@ -20,7 +20,7 @@ export default function LoginPage() {
       dispatch(setToken(res.token));
       router.push("/dashboard");
     } catch (err) {
-      alert("Login failed: " + err);
+      console.error(err);
     }
   };
 

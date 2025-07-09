@@ -8,10 +8,10 @@ export default function DashboardPage() {
   const { data, isLoading } = useGetDashboardQuery({});
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="p-4">
+      <h1 className="text-5xl font-bold mb-4">Dashboard</h1>
       {isLoading ? (
-        <p>Loading...</p>
+        <p className="animate-pulse">Loading...</p>
       ) : (
         <pre>{JSON.stringify(data, null, 2)}</pre>
       )}
