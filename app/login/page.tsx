@@ -1,27 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/features/api/authApi";
 import { setToken } from "@/features/auth/authSlice";
+import { toast } from "react-toastify";
+
+// Define the expected response structure from the login API
+interface LoginResponse {
+  token: string;
+}
+
+// Define the expected error structure
+interface ApiError {
+  data?: {
+    error?: string;
+  };
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>(""); 
+  const [password, setPassword] = useState<string>("");
+  
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const res = await login({ email, password }).unwrap();
+      const res = (await login({ email, password }).unwrap()) as LoginResponse;
       dispatch(setToken(res.token));
       router.push("/dashboard");
     } catch (err) {
+      const error = err as ApiError;
+      toast.error(error?.data?.error || "Login failed");
       console.error(err);
     }
+  };
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
 
   return (
@@ -30,7 +54,7 @@ export default function LoginPage() {
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
           Sign In
         </h2>
-        <div className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="email"
@@ -42,7 +66,7 @@ export default function LoginPage() {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="Enter your email"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
@@ -59,7 +83,7 @@ export default function LoginPage() {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               placeholder="Enter your password"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
@@ -85,13 +109,12 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            onClick={handleSubmit}
             className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Sign In"}
           </button>
-        </div>
+        </form>
         <p className="mt-6 text-center text-sm text-gray-600">
           Don&#39;t have an account?{" "}
           <a href="/register" className="text-blue-600 hover:underline">
