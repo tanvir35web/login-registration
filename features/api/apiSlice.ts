@@ -10,6 +10,8 @@ export const apiSlice = createApi({
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
+      headers.set("Access-Control-Allow-Origin", "*")
+      headers.set("Origin", "https://login-registration-omega.vercel.app")
       return headers;
     },
   }),
