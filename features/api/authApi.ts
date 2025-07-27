@@ -19,8 +19,11 @@ export const authApi = apiSlice.injectEndpoints({
     getDashboard: builder.query({
       query: () => "/dashboard",
     }),
+    getProducts: builder.query({
+      query: () => "/products"
+    })
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetDashboardQuery } =
+export const { useRegisterMutation, useLoginMutation, useGetDashboardQuery, useGetProductsQuery } =
   authApi;
