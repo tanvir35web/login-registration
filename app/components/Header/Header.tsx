@@ -6,6 +6,10 @@ import { CgMenuRight } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaUserCircle } from "react-icons/fa";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { useDispatch } from "react-redux";
+import { logout } from "@/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 const NavItem = ({
   onClick,
@@ -26,6 +30,8 @@ const NavItem = ({
 
 export const Header = () => {
   const [showNav, setShowNav] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const toggleNav = () => {
     setShowNav((prev) => !prev);
@@ -39,8 +45,9 @@ export const Header = () => {
   };
 
   // Replace these with your real data
-  const productData = [];
-  const userInfo: { image?: string } | null = null;
+  const cartItems = useAppSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const user = useAppSelector((state) => state.auth.user);
 
   return (
     <div className="w-full h-20 bg-white border-b border-gray-300 font-bodyFont z-20 p-2 fixed top-0">
@@ -100,20 +107,18 @@ export const Header = () => {
               className="w-20 bg-amber-200 px-3 py-2 rounded-md flex items-center gap-3"
             >
               <FaCartShopping />
-              <p className="text-lg font-bold">{productData.length}</p>
+              <p className="text-lg font-bold">{cartCount}</p>
             </div>
           </Link>
 
-          <Link href="/login">
+          <Link href={user ? "/profile" : "/login"}>
             <div onClick={toggleNav} className="flex gap-3 items-center">
-              {userInfo?.image ? (
-                <Image
-                  className="w-9 h-9 rounded-full"
-                  src={userInfo.image}
-                  alt="userLogo"
-                  width={36}
-                  height={36}
-                />
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <FaUserCircle size={24} />
+                  <span className="text-sm font-medium">{user.name}</span>
+                  
+                </div>
               ) : (
                 <FaUserCircle size={24} />
               )}

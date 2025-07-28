@@ -10,6 +10,10 @@ import { toast } from "react-toastify";
 // Define the expected response structure from the login API
 interface LoginResponse {
   token: string;
+  user: {
+    name: string;
+    email: string;
+  };
 }
 
 // Define the expected error structure
@@ -27,12 +31,20 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       const res = (await login({ email, password }).unwrap()) as LoginResponse;
-      dispatch(setToken(res.token));
-      router.push("/dashboard");
+      dispatch(setToken({ token: res.token, user: res.user }));
+      setCookie("authToken", res.token, 7); // Save token for 7 days
+      toast.success("Login successful!");
+      router.push("/");
     } catch (err) {
       const error = err as ApiError;
       toast.error(error?.data?.error || "Login failed");

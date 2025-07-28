@@ -1,14 +1,30 @@
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { addToCart } from "@/features/auth/cartSlice";
+import { toast } from "react-toastify";
 
-const ProductCard = ({ product }) => {
+type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  oldPrice?: number;
+  image: string;
+  category: string;
+  isNew?: boolean;
+};
+
+const ProductCard = ({ product }: { product: Product }) => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   return (
     <div
       key={product._id}
       className="group border-[1px] shadow-sm relative rounded-xl p-2 "
     >
       <div
-        onClick={() => {}}
+        onClick={() => router.push(`/product/${product._id}`)}
         className="w-full h-[400px] overflow-hidden rounded-md  cursor-pointer "
       >
         <Image
@@ -32,7 +48,18 @@ const ProductCard = ({ product }) => {
             <p className="font-semibold">$ {product.price}</p>
           </div>
           <p
-            onClick={() => {}}
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch(addToCart({
+                _id: product._id,
+                title: product.title,
+                price: product.price,
+                image: product.image,
+                category: product.category,
+                quantity: 1,
+              }));
+              toast.success("Added to cart!");
+            }}
             className="absolute z-20 w-[100] bg-amber-200 text-black font-medium p-1 justify-center rounded-md flex items-center gap-1 top-0 transform -translate-x-32 group-hover:translate-x-0 transition-transform cursor-pointer duration-500 "
           >
             add to cart
