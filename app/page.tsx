@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
     <Header />
-    <div className="max-w-screen-xl mx-auto py-10 grid lg:grid-cols-4 gap-10 sm:grid-cols-2 w-11/12 ">
+    <div className="max-w-screen-xl min-h-screen mx-auto py-10 grid lg:grid-cols-4 gap-10 sm:grid-cols-2 w-11/12 ">
       {data &&
         data.products.map((product) => (
           <ProductCard key={product._id} product={product} />
