@@ -85,7 +85,7 @@ export default function CheckoutPage() {
     // Simulate order processing
     toast.success("Order placed successfully!");
     dispatch(clearCart());
-    router.push("/");
+    router.push("/home");
   };
 
   // Check if user is logged in
@@ -112,7 +112,7 @@ export default function CheckoutPage() {
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/home")}
             className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Continue Shopping

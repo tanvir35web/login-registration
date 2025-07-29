@@ -41,10 +41,21 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const res = (await login({ email, password }).unwrap()) as LoginResponse;
+      
+      // Dispatch the action to update Redux state
       dispatch(setToken({ token: res.token, user: res.user }));
-      setCookie("authToken", res.token, 7); // Save token for 7 days
+      
+      // Set cookie for persistence
+      setCookie("authToken", res.token, 7);
+      
+      // Show success message
       toast.success("Login successful!");
-      router.push("/");
+      
+      // Add a small delay to ensure state propagation before navigation
+      setTimeout(() => {
+        router.push("/home");
+      }, 100);
+      
     } catch (err) {
       const error = err as ApiError;
       toast.error(error?.data?.error || "Login failed");

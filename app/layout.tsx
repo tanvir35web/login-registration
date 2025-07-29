@@ -7,7 +7,6 @@ import { Header } from "@/app/components/Header/Header";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { setToken } from "@/features/auth/authSlice";
-import Footer from "./components/Footer/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,24 +28,19 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Check for auth token in cookies on app initialization
     const getCookie = (name: string) => {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop()?.split(';').shift();
+      if (parts.length === 2) return parts.pop()?.split(";").shift();
       return null;
     };
 
     const authToken = getCookie("authToken");
     if (authToken) {
-      // Here you would typically validate the token with your API
-      // For now, we'll assume the token is valid and restore user session
-      // You should implement proper token validation
       try {
-        // This is a placeholder - replace with actual token validation
         const user = {
-          name: "User", // You would get this from token validation
-          email: "user@example.com"
+          name: "User",
+          email: "user@example.com",
         };
         dispatch(setToken({ token: authToken, user }));
       } catch (error) {
@@ -58,9 +52,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <div className="h-20" />
       {children}
-      <Footer />
     </>
   );
 }
@@ -73,17 +65,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

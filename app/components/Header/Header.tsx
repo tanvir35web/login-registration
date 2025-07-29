@@ -1,15 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { CgMenuRight } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import { FaUserCircle } from "react-icons/fa";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import { useDispatch } from "react-redux";
-import { logout } from "@/features/auth/authSlice";
-import { useRouter } from "next/navigation";
 
 const NavItem = ({
   onClick,
@@ -30,8 +26,6 @@ const NavItem = ({
 
 export const Header = () => {
   const [showNav, setShowNav] = useState(false);
-  const dispatch = useDispatch();
-  const router = useRouter();
 
   const toggleNav = () => {
     setShowNav((prev) => !prev);
@@ -49,10 +43,13 @@ export const Header = () => {
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const user = useAppSelector((state) => state.auth.user);
 
+  // Debug: Log user state changes
+  console.log("Header - Current user state:", user);
+
   return (
     <div className="w-full h-20 bg-white border-b border-gray-300 font-bodyFont z-20 p-2 fixed top-0">
       <div className="max-w-screen-xl h-full mx-auto flex items-center justify-between overflow-hidden">
-        <Link href="/" onClick={scrollToTop} className="font-black text-xl">
+        <Link href="/home" onClick={scrollToTop} className="font-black text-xl">
           {/* <Image className="w-32" src={darkLogo} alt="dark logo" /> */}
           E-Shopping
         </Link>
@@ -84,11 +81,8 @@ export const Header = () => {
               />
             )}
 
-            <Link href="/">
+            <Link href="/home">
               <NavItem onClick={toggleNav} label="Home" />
-            </Link>
-            <Link href="/">
-              <NavItem onClick={toggleNav} label="Shop" />
             </Link>
             <Link href="/cart">
               <NavItem onClick={toggleNav} label="Cart" />
@@ -96,9 +90,7 @@ export const Header = () => {
             <Link href="/login">
               <NavItem onClick={toggleNav} label="User" />
             </Link>
-            <Link href="/">
-              <NavItem onClick={toggleNav} label="About" />
-            </Link>
+           
           </ul>
 
           <Link href="/cart">

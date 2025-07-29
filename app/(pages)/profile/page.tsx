@@ -31,7 +31,7 @@ export default function ProfilePage() {
     dispatch(logout());
     deleteCookie("authToken");
     toast.success("Logged out successfully!");
-    router.push("/");
+    router.push("/login");
   };
 
   const handleSave = () => {
